@@ -1,0 +1,156 @@
+CoAp - RFC 7252
+
+- request - response type
+-using UDP as protocol or DTLS for secure
+
+
+Main features:
+- used in M2M data exchange (similar to HTTP)
+- Asynchronous message exchange
+- Low overhead and very simple to parse
+- URI and content-type support
+- Proxy and caching capabilities
+
+
+Application				- application layer
+
+	Request/Response
+	Messages
+
+UDP 					- transport layer
+
+
+	* Message layer deals with UDP and with asynchronous messages (between endpoints).
+	* The Request/Response layer manages request/response interaction based on request/response messages.
+
+
+CoAP supports 4 differenct message types:
+	> confirmable (CON - the client can be sure that the message will arive to the server - the message is sent again and again until the other party sends and ackowledges the message - ACK) - vezi fig. 1
+	> non-confirmable
+	> acknowledgment
+	> reset
+
+
+	CoAP Messages Model
+
+	
+	- Each CoAP message has a unique ID;
+	Contains:
+	 > a binary header
+	 > a compact options
+	 > payload
+
+
+
+
+
+	 Client                        Server
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -	   CON (ID: 0xBC63)      -
+	   -		----------->	     -
+	   -							 -
+	   -	   ACK (ID: 0xBC63) 	 -
+	   -		<-----------		 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+
+	   			Fig. 1
+
+If the server has troubles managing the incoming request, it can send bac a Rest message (RST) insted of the ACK.
+
+	 Client                        Server
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -	   CON (ID: 0xBC63)      -
+	   -		----------->	     -
+	   -							 -
+	   -	        RST 	         -
+	   -		<-----------		 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+
+The Non-confirmable (NON) messages don't require an Ackowledge by the server. They do not contain critical information that must be delivered to the server (i.e.: values read from sensors).
+
+	 Client                        Server
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -	   NON (ID: 0xBC63)      -
+	   -		----------->	     -
+	   -							 -
+	   -	             	         -
+	   -		             		 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+
+CoAp Request/Response Model
+
+The request is sent using CON/NON.
+If the server can answer immediately to the client request, then the request is carried using a Confirmable message (CON) => ACK / error message.
+
+Also, the CoAP provides a token which is used to match the request and the response.
+
+If the server can't answer to the request coming from the client immediately, then it sends an Acknowledge message with an empty response. As soon as the response is available, the the server sends a new Confirmable message to the client containing the response. After, the client sends back an Ackowledge message.
+
+
+	 Client                        Server
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -	   CON (ID: 0xBC63)      -
+	   -							 -
+	   -		GET / Pressure       -
+	   -	   ---------------->	 -
+	   -		  Token 0x14	     -
+	   -	             	         -
+	   -		ACK(ID: 0xBC63)      -
+	   -	   <----------------	 -
+	   -							 -
+	   -		CON(ID: 0xBC64)      -
+	   -			1000 hPa         -
+	   -	   <----------------	 -
+	   -		  Token 0x14	     -
+	   -		             	     -
+	   -		ACK(ID: 0xBC64)      -
+	   -	   ---------------->	 -
+	   -							 -
+	   -							 -
+	   -							 -
+	   -							 -
+
+
+
+CoAP message format:
+
+-------------------------------------
+| Ver | T | TKL | Code | Message ID |
+-------------------------------------
+|				Token               |
+-------------------------------------
+|		  Options(if exists..)      |
+-------------------------------------
+|		  Payload(if exists..)      |
+-------------------------------------
+
+Ver - 2 bit unsigned integer indicating the version
+
+T - 2 bit unsigned integer indicating the message type: 0 - confirmable / 1 non-confirmable
+
+TKL - Token Length (4 bit length)
+
+Code - It is the code response (8 bit length)
+
+Message ID - It is the message ID expressed with 16 bit
