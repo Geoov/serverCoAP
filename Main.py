@@ -1,4 +1,10 @@
 from Header import Header
+from requestConnection import requestConnection
+import socket
+
+# coding=utf-8
+# -*- coding: utf-8 -*-
+
 
 if __name__=="__main__":
 
@@ -11,3 +17,5 @@ if __name__=="__main__":
     header.setHeader()
 
     header.Print()
+    API = requestConnection()
+    # json, meciuri = API.getWinningBets()
