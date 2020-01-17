@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>938</width>
+    <height>525</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="start_button">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>390</y>
+      <width>97</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>START</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stop_button">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>440</y>
+      <width>97</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>STOP</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>901</width>
+      <height>361</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>IP</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>PORT</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>METHOD</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>TOKEN</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>REQUEST</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="refresh_button">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>370</y>
+      <width>361</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>REFRESH</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>938</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

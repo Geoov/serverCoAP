@@ -3,8 +3,12 @@ class Header():
     def __init__(self):
         self.header=""
 
+        self.headerVerTypeTkl = ""
+
         #version - 2-bit unsigned integer (CoAP version number )
         self.ver=""
+
+        code=""
 
         #type - 2-bit unsigned integer ( type of msg:
                                         # CON - 0
@@ -46,8 +50,11 @@ class Header():
 
         self.messID = header[16:32]
 
-        if self.tkl != 0 and (self.tkl > 0 and self.tkl <= 8):
-            self.token = header[32:(32+8*self.tkl)]
+        # if self.tkl != 0 and (self.tkl > 0 and self.tkl <= 8):
+        self.limit = 32+int(8*self.tkl)
+        # print(self.limit)
+        self.token = header[32:self.limit]
+        # print(self.token)
 
         # if self.options != 0:
         #     self.options = header[128:160]
@@ -58,18 +65,26 @@ class Header():
 
     def setVerTypeTkl(self, version, type, tkl):
         # self.ver = format(version,'02b')
-        self.ver = version
-        self.type = type
-        self.tkl = tkl
+        self.ver = format(version, '02b')
+        self.type = format(type, '02b')
+        self.tkl = format(tkl, '04b')
+        # print(self.tkl)
+        self.headerVerTypeTkl = (version<<6) + (type<<4) + tkl
+        self.headerVerTypeTkl = format(self.headerVerTypeTkl, '08b')
+
+    def setMessageType(self, type):
+        # print(self.type)
+        self.type = format(type, '02b')
+        # print(self.type)
 
     def getVersion(self):
-        return format(self.ver,'02b');
+        return int(str(self.ver),2)
 
     def getMessageType(self):
-        return format(self.type,'02b');
+        return int(str(self.type),2)
 
     def getTokenLength(self):
-        return format(self.tkl,'04b');
+        return int(str(self.tkl),2)
 
     # def getType(self):
     #     return int(self.type, 2);
@@ -80,42 +95,45 @@ class Header():
 # Setting and getting response code & class..
 
     def setResponseClassCode(self, responseClass, responseCode):
-        self.respClass = responseClass
-        self.respCode = responseCode
+        self.respClass = format(responseClass, '03b')
+        self.respCode = format(responseCode, '05b')
+        self.code = (responseClass << 5)+responseCode
+        self.code = format(self.code, '08b')
 
     def getResponseClass(self):
-        return format(self.respClass,'03b');
+        return int(str(self.respClass),2)
 
     def getResponseCode(self):
-        return format(self.respCode,'05b');
+        return int(str(self.respCode),2)
 
 # Setting and getting message ID
 
     def setMessageID(self,messageID):
-        self.messID = messageID
+        self.messID = format(messageID,'016b')
 
     def getMessageID(self):
-        return format(self.messID,'016b');
+        return int(str(self.messID),2)
 
 # Setting and getting Token
 
     def setToken(self, token):
-        if (int(self.getTokenLength(),2)) >0 and (int(self.getTokenLength(),2)) <=8:
-            self.token = token
+        if (self.getTokenLength() >0 and self.getTokenLength() <=8):
+            self.token = format(token, '0'+str(self.getTokenLength()*8)+'b')
+            # print(self.token)
         else:
             print('Invalid value for token length...')
 
     def getToken(self):
         if self.token:
-            return format(self.token, '0' + str(int(self.getTokenLength(),2) * 8) + 'b')
+            return int(str(self.token),2)
 
 # Glue that damn functions
 
     def setHeader(self):
         if self.getTokenLength() > 0:
-            self.header = str(self.getVersion()) + str(self.getMessageType()) + str(self.getTokenLength()) + str(self.getResponseClass()) + str(self.getResponseCode()) + str(self.getMessageID()) + str(self.getToken())
+            self.header = str(self.ver) + str(self.type) + str(self.tkl) + str(self.respClass) + str(self.respCode) + str(self.messID) + str(self.token)
         else:
-            self.header = str(self.getVersion()) + str(self.getMessageType()) + str(self.getTokenLength()) + str(self.getResponseClass()) + str(self.getResponseCode()) + str(self.getMessageID())
+            self.header = str(self.ver) + str(self.type) + str(self.tkl) + str(self.respClass) + str(self.respCode) + str(self.messID)
 
     def getHeader(self):
         return self.header
@@ -129,5 +147,5 @@ class Header():
         print("Response Code= " + str(self.getResponseCode()))
         print("MessageId= " + str(self.getMessageID()))
         print("Token= " + str(self.getToken()))
-        print("Header= " + str(self.getHeader()))
+        print("Header= " + str(self.header))
         print("Header size= " + str(len(self.getHeader())))
